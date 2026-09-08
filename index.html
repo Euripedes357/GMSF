@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMSF – Arquitetos de Inteligência Artificial e Automações</title>
+    <meta name="description" content="Integramos Processos, Dados, ERP, Inteligência Artificial, Machine Learning e Automações para transformar operações E2E.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: '#0B1120',
+                        navyLight: '#111827',
+                        navyLighter: '#1E293B',
+                        techBlue: '#2563EB',
+                        techBlueDark: '#1D4ED8',
+                        emeraldLight: '#10B981',
+                        emeraldDark: '#059669',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        body { 
+            background-color: #0B1120; 
+            color: #F8FAFC; 
+            overflow-x: hidden;
+        }
+        
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(to right, #2563EB, #10B981);
+        }
+        
+        .gradient-border-card {
+            position: relative;
+            background: #111827;
+            background-clip: padding-box;
+            border: 1px solid transparent;
+            border-radius: 0.75rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gradient-border-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.4), rgba(16, 185, 129, 0.1), rgba(17, 24, 39, 1));
+            transition: opacity 0.3s ease;
+        }
+        
+        .gradient-border-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .gradient-border-card:hover::before {
+            background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.8), rgba(16, 185, 129, 0.6), rgba(17, 24, 39, 1));
+        }
+
+        .glass-nav {
+            background: rgba(11, 17, 32, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        
+        /* Floating Elements */
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -10;
+            opacity: 0.5;
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* Connecting Lines */
+        .connector-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            z-index: -1;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3B82F6;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-300">
+
+    <!-- Navbar -->
+    <header class="fixed w-full top-0 z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex flex-col">
+                    <a href="#" class="font-heading font-bold text-2xl text-white tracking-tight">GMSF</a>
+                    <span class="text-[0.65rem] uppercase tracking-widest text-emeraldLight">Arquitetos de IA & Automações</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm font-medium">
+                    <a href="#inicio" class="text-gray-300 hover:text-white transition-colors">Início</a>
+                    <a href="#solucoes" class="text-gray-300 hover:text-white transition-colors">Soluções</a>
+                    <a href="#supply-chain" class="text-gray-300 hover:text-white transition-colors">E2E Supply Chain</a>
+                    <a href="#arquitetura" class="text-gray-300 hover:text-white transition-colors">Nossa Arquitetura</a>
+                    <a href="#economia-circular" class="text-gray-300 hover:text-white transition-colors">Economia Circular</a>
+                    <a href="#contato" class="text-gray-300 hover:text-white transition-colors">Contato</a>
+                </nav>
+                
+                <!-- Desktop CTA -->
+                <div class="hidden md:block">
+                    <a href="#contato" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-techBlue hover:bg-techBlueDark rounded-md transition-colors shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)]">
+                        Agendar Consultoria
+                    </a>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navyLight border-t border-gray-800">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="#inicio" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">Início</a>
+                <a href="#solucoes" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">Soluções</a>
+                <a href="#supply-chain" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">E2E Supply Chain</a>
+                <a href="#arquitetura" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">Nossa Arquitetura</a>
+                <a href="#economia-circular" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">Economia Circular</a>
+                <a href="#contato" class="block px-3 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 rounded-md">Contato</a>
+                <a href="#contato" class="block mt-4 text-center px-5 py-3 text-base font-medium text-white bg-techBlue rounded-md">Agendar Consultoria</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. HERO SECTION -->
+        <section id="inicio" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex items-center min-h-[90vh]">
+            <!-- Background Elements -->
+            <div class="blob w-[500px] h-[500px] bg-techBlue top-0 left-[-10%] opacity-20"></div>
+            <div class="blob w-[400px] h-[400px] bg-emeraldLight bottom-0 right-[-5%] opacity-15" style="animation-delay: -5s;"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 text-center">
+                <div class="inline-block mb-6 px-4 py-1.5 rounded-full border border-gray-700 bg-gray-800/50 backdrop-blur text-sm font-medium text-gray-300 fade-in-up">
+                    <span class="w-2 h-2 rounded-full bg-emeraldLight inline-block mr-2 animate-pulse"></span>
+                    Da previsão à execução. Da operação à circularidade.
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white tracking-tight leading-tight mb-6 fade-in-up delay-100">
+                    Arquitetando a Supply Chain <br class="hidden lg:block" />
+                    <span class="gradient-text">Inteligente, Autônoma e Sustentável</span> do Futuro
+                </h1>
+                
+                <p class="max-w-3xl mx-auto text-lg md:text-xl text-gray-400 mb-10 fade-in-up delay-200">
+                    Integramos Processos, Dados, ERP, Inteligência Artificial, Machine Learning e Automações para transformar operações E2E, conectar decisões e ampliar eficiência, resiliência e sustentabilidade até a Economia Circular.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16 fade-in-up delay-300">
+                    <a href="#solucoes" class="w-full sm:w-auto px-8 py-4 bg-white text-navy font-semibold rounded-md hover:bg-gray-100 transition-colors">
+                        Conheça Nossas Soluções
+                    </a>
+                    <a href="#contato" class="w-full sm:w-auto px-8 py-4 bg-transparent border border-gray-600 text-white font-semibold rounded-md hover:border-techBlue hover:bg-techBlue/10 transition-colors">
+                        Agendar uma Consultoria
+                    </a>
+                </div>
+                
+                <div class="mt-8 text-sm font-medium tracking-wide text-gray-500 uppercase fade-in-up delay-400">
+                    Da operação ao insight. <span class="text-techBlue">Do insight à decisão.</span> <span class="text-emeraldLight">Da decisão à automação.</span>
+                </div>
+
+                <!-- Visual Representation -->
+                <div class="mt-12 max-w-5xl mx-auto hidden md:flex items-center justify-between glass-panel p-6 rounded-xl fade-in-up delay-400 relative">
+                    <div class="connector-line"></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700"><i data-lucide="database" class="w-5 h-5 text-gray-400"></i></div><span class="text-xs font-semibold">ERP</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700"><i data-lucide="bar-chart-2" class="w-5 h-5 text-techBlue"></i></div><span class="text-xs font-semibold">Dados</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-techBlue/20 flex items-center justify-center border border-techBlue/50"><i data-lucide="cpu" class="w-5 h-5 text-techBlue"></i></div><span class="text-xs font-semibold text-techBlue">IA</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-emeraldLight/20 flex items-center justify-center border border-emeraldLight/50"><i data-lucide="network" class="w-5 h-5 text-emeraldLight"></i></div><span class="text-xs font-semibold text-emeraldLight">Machine Learning</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-techBlue/20 flex items-center justify-center border border-techBlue/50"><i data-lucide="settings" class="w-5 h-5 text-techBlue"></i></div><span class="text-xs font-semibold text-techBlue">Automação</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700"><i data-lucide="boxes" class="w-5 h-5 text-gray-400"></i></div><span class="text-xs font-semibold">Supply Chain</span></div>
+                    <div class="flex flex-col items-center gap-2 relative z-10 bg-navy px-2"><div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700"><i data-lucide="recycle" class="w-5 h-5 text-emeraldLight"></i></div><span class="text-xs font-semibold">Circular</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. POSICIONAMENTO -->
+        <section class="py-24 bg-navyLight relative border-y border-gray-800">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16 fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Inteligência conectando toda a cadeia de valor</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">Nossos cinco pilares fundamentais para transformar operações tradicionais em ecossistemas preditivos e autônomos.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                    <!-- Pillar 1 -->
+                    <div class="glass-panel p-6 rounded-xl fade-in-up hover:bg-gray-800/50 transition-colors">
+                        <i data-lucide="git-merge" class="w-8 h-8 text-gray-400 mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide text-sm">Processos</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Mapeamento, melhoria, integração e automação de fluxos de trabalho E2E.</p>
+                    </div>
+                    <!-- Pillar 2 -->
+                    <div class="glass-panel p-6 rounded-xl fade-in-up delay-100 hover:bg-gray-800/50 transition-colors border-b-2 border-transparent hover:border-techBlue">
+                        <i data-lucide="database" class="w-8 h-8 text-techBlue mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide text-sm">Dados</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Integração, governança, analytics e inteligência para criar uma base sólida de decisões.</p>
+                    </div>
+                    <!-- Pillar 3 -->
+                    <div class="glass-panel p-6 rounded-xl fade-in-up delay-200 hover:bg-gray-800/50 transition-colors">
+                        <i data-lucide="server" class="w-8 h-8 text-gray-400 mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide text-sm">ERP</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Integração profunda dos sistemas corporativos com camadas de dados, IA e automações.</p>
+                    </div>
+                    <!-- Pillar 4 -->
+                    <div class="glass-panel p-6 rounded-xl fade-in-up delay-300 hover:bg-gray-800/50 transition-colors border-b-2 border-transparent hover:border-emeraldLight">
+                        <i data-lucide="brain" class="w-8 h-8 text-emeraldLight mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide text-sm">Inteligência Artificial</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">IA generativa, agentes inteligentes e sistemas de apoio avançado à decisão.</p>
+                    </div>
+                    <!-- Pillar 5 -->
+                    <div class="glass-panel p-6 rounded-xl fade-in-up delay-400 hover:bg-gray-800/50 transition-colors border-b-2 border-transparent hover:border-techBlue">
+                        <i data-lucide="activity" class="w-8 h-8 text-techBlue mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide text-sm">Machine Learning</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Forecasting, otimização, recomendação, detecção de padrões e modelos preditivos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. NOSSOS SERVIÇOS -->
+        <section id="solucoes" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16 fade-in-up">
+                    <span class="text-techBlue font-semibold tracking-wider uppercase text-sm mb-2 block">Nossos Serviços</span>
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Soluções Especializadas</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">Arquiteturas sob medida para resolver os desafios mais complexos da sua operação.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Service 1 -->
+                    <div class="gradient-border-card p-8 fade-in-up">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/10 flex items-center justify-center mb-6">
+                            <i data-lucide="line-chart" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Planejamento Inteligente da Demanda</h3>
+                        <p class="text-gray-400 text-sm">Previsões altamente precisas utilizando algoritmos avançados para reduzir rupturas e excessos.</p>
+                    </div>
+                    
+                    <!-- Service 2 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-100">
+                        <div class="w-12 h-12 rounded-lg bg-emeraldLight/10 flex items-center justify-center mb-6">
+                            <i data-lucide="cog" class="w-6 h-6 text-emeraldLight"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Automação Inteligente de Processos</h3>
+                        <p class="text-gray-400 text-sm">Orquestração de fluxos complexos e eliminação de tarefas manuais repetitivas via RPA e agentes.</p>
+                    </div>
+                    
+                    <!-- Service 3 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-200">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/10 flex items-center justify-center mb-6">
+                            <i data-lucide="truck" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Otimização Logística</h3>
+                        <p class="text-gray-400 text-sm">Roteirização dinâmica, alocação de frota e malha logística orientada por dados em tempo real.</p>
+                    </div>
+                    
+                    <!-- Service 4 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-300">
+                        <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center mb-6">
+                            <i data-lucide="package-search" class="w-6 h-6 text-gray-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Inteligência de Estoques</h3>
+                        <p class="text-gray-400 text-sm">Balanceamento de inventário multi-escalão, políticas dinâmicas e redução de capital empatado.</p>
+                    </div>
+                    
+                    <!-- Service 5 -->
+                    <div class="gradient-border-card p-8 fade-in-up">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/10 flex items-center justify-center mb-6">
+                            <i data-lucide="bar-chart" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Dados & Analytics</h3>
+                        <p class="text-gray-400 text-sm">Data Lakes, Dashboards executivos e torre de controle para visibilidade de ponta a ponta.</p>
+                    </div>
+                    
+                    <!-- Service 6 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-100">
+                        <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center mb-6">
+                            <i data-lucide="layers" class="w-6 h-6 text-gray-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">ERP Inteligente</h3>
+                        <p class="text-gray-400 text-sm">Modernização e extração de valor máximo de sistemas legados conectando-os a novos motores de IA.</p>
+                    </div>
+                    
+                    <!-- Service 7 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-200">
+                        <div class="w-12 h-12 rounded-lg bg-emeraldLight/10 flex items-center justify-center mb-6">
+                            <i data-lucide="zap" class="w-6 h-6 text-emeraldLight"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Machine Learning para Negócios</h3>
+                        <p class="text-gray-400 text-sm">Modelos personalizados para pricing, detecção de anomalias, churn e recomendação.</p>
+                    </div>
+                    
+                    <!-- Service 8 -->
+                    <div class="gradient-border-card p-8 fade-in-up delay-300">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/10 flex items-center justify-center mb-6">
+                            <i data-lucide="bot" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Agentes de Inteligência Artificial</h3>
+                        <p class="text-gray-400 text-sm">Assistentes autônomos para tomada de decisão, copilot de operações e atendimento avançado.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. E2E SUPPLY CHAIN -->
+        <section id="supply-chain" class="py-24 bg-navyLight relative overflow-hidden">
+            <div class="blob w-96 h-96 bg-techBlue/10 right-0 top-1/2 transform -translate-y-1/2"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+                <div class="fade-in-up mb-12">
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">E2E Supply Chain</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">A GMSF conecta inteligência a cada etapa da cadeia.</p>
+                </div>
+
+                <div class="relative py-10 fade-in-up delay-200">
+                    <!-- Flow line for desktop -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-gray-800 via-techBlue to-emeraldLight -translate-y-1/2 rounded-full"></div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 relative z-10">
+                        <!-- Node 1 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-techBlue">
+                            <i data-lucide="clipboard-list" class="w-8 h-8 text-techBlue mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Plan</span>
+                            <span class="text-xs text-gray-400">Planejamento</span>
+                        </div>
+                        <!-- Node 2 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-techBlue">
+                            <i data-lucide="shopping-cart" class="w-8 h-8 text-techBlue mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Source</span>
+                            <span class="text-xs text-gray-400">Suprimentos</span>
+                        </div>
+                        <!-- Node 3 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-techBlue">
+                            <i data-lucide="factory" class="w-8 h-8 text-techBlue mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Make</span>
+                            <span class="text-xs text-gray-400">Manufatura</span>
+                        </div>
+                        <!-- Node 4 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-techBlue">
+                            <i data-lucide="truck" class="w-8 h-8 text-techBlue mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Deliver</span>
+                            <span class="text-xs text-gray-400">Logística/Distrib.</span>
+                        </div>
+                        <!-- Node 5 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-white">
+                            <i data-lucide="users" class="w-8 h-8 text-white mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Customer</span>
+                            <span class="text-xs text-gray-400">Cliente</span>
+                        </div>
+                        <!-- Node 6 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-emeraldLight">
+                            <i data-lucide="corner-down-left" class="w-8 h-8 text-emeraldLight mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Return</span>
+                            <span class="text-xs text-gray-400">Logística Reversa</span>
+                        </div>
+                        <!-- Node 7 -->
+                        <div class="bg-navy border border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center shadow-lg transform transition hover:scale-105 hover:border-emeraldLight shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                            <i data-lucide="recycle" class="w-8 h-8 text-emeraldLight mb-3"></i>
+                            <span class="font-bold text-white text-sm uppercase mb-1">Recycle</span>
+                            <span class="text-xs text-gray-400">Economia Circular</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ECONOMIA CIRCULAR -->
+        <section id="economia-circular" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="fade-in-up">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emeraldLight/10 text-emeraldLight text-sm font-medium mb-6 border border-emeraldLight/20">
+                            <i data-lucide="leaf" class="w-4 h-4"></i> Sustentabilidade
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-6">Da Supply Chain Linear à Supply Chain Circular</h2>
+                        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                            Inteligência Artificial transformando eficiência operacional em sustentabilidade econômica e ambiental. Fechamos o ciclo de valor minimizando desperdícios e maximizando o reaproveitamento.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-navyLight border border-gray-700 flex items-center justify-center shrink-0 mt-1">
+                                    <span class="text-emeraldLight font-bold text-sm">1</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1">Reduzir</h4>
+                                    <p class="text-sm text-gray-400">Otimização de rotas e consumo de insumos via previsões algorítmicas rigorosas.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-navyLight border border-gray-700 flex items-center justify-center shrink-0 mt-1">
+                                    <span class="text-emeraldLight font-bold text-sm">2</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1">Reutilizar</h4>
+                                    <p class="text-sm text-gray-400">Identificação de ativos e componentes ociosos para reintrodução na malha.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-navyLight border border-gray-700 flex items-center justify-center shrink-0 mt-1">
+                                    <span class="text-emeraldLight font-bold text-sm">3</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1">Recuperar</h4>
+                                    <p class="text-sm text-gray-400">Gestão inteligente da logística reversa, agregando valor a devoluções e refugos.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-navyLight border border-emeraldLight/30 flex items-center justify-center shrink-0 mt-1 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                    <span class="text-emeraldLight font-bold text-sm">4</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold mb-1">Reciclar</h4>
+                                    <p class="text-sm text-gray-400">Rastreabilidade de ponta a ponta para garantir a destinação sustentável de materiais.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual representation -->
+                    <div class="relative h-[500px] rounded-2xl glass-panel border border-gray-800 flex items-center justify-center fade-in-up delay-200 overflow-hidden">
+                        <!-- Abstract circular animation graphic using CSS -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-64 h-64 border border-dashed border-gray-600 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                            <div class="w-48 h-48 border border-emeraldLight/30 rounded-full absolute animate-[spin_20s_linear_infinite_reverse]"></div>
+                            <div class="w-32 h-32 border border-techBlue/30 rounded-full absolute animate-[spin_15s_linear_infinite]"></div>
+                            
+                            <div class="absolute bg-navy w-24 h-24 rounded-full flex flex-col items-center justify-center border border-gray-700 shadow-[0_0_30px_rgba(16,185,129,0.2)] z-10">
+                                <i data-lucide="refresh-cw" class="w-8 h-8 text-emeraldLight mb-1"></i>
+                                <span class="text-[10px] font-bold tracking-widest uppercase text-white">Circular</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. NOSSA ARQUITETURA -->
+        <section id="arquitetura" class="py-24 bg-navyLight border-t border-gray-800 relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16 fade-in-up">
+                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4">Nossa Arquitetura</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-2">Transformamos dados empresariais em inteligência e inteligência em ação.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-4 relative">
+                    <div class="absolute left-8 top-8 bottom-8 w-1 bg-gradient-to-b from-gray-700 via-techBlue to-emeraldLight hidden md:block rounded-full"></div>
+                    
+                    <!-- Layer 1 -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 ml-0 md:ml-16 fade-in-up">
+                        <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center shrink-0 border border-gray-700 md:absolute md:-left-[4.5rem]">
+                            <i data-lucide="building-2" class="w-6 h-6 text-gray-400"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Operações</h3>
+                            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-400">
+                                <span class="px-2 py-1 bg-gray-800 rounded">Supply Chain</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">Manufatura</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">Logística</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">Compras</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">Vendas</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">Clientes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 2 -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 ml-0 md:ml-16 fade-in-up delay-100">
+                        <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center shrink-0 border border-gray-700 md:absolute md:-left-[4.5rem]">
+                            <i data-lucide="layout-grid" class="w-6 h-6 text-gray-300"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-white mb-2 uppercase tracking-wide">Sistemas</h3>
+                            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-400">
+                                <span class="px-2 py-1 bg-gray-800 rounded">ERP</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">CRM</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">SCM</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">MES</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">WMS</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">TMS</span>
+                                <span class="px-2 py-1 bg-gray-800 rounded">IoT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 3 -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 ml-0 md:ml-16 fade-in-up delay-200 border-l-2 md:border-l-0 border-techBlue">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/20 flex items-center justify-center shrink-0 border border-techBlue/50 md:absolute md:-left-[4.5rem]">
+                            <i data-lucide="database" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-techBlue mb-2 uppercase tracking-wide">Dados</h3>
+                            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-300">
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Data Lake</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Data Warehouse</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Lakehouse</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">APIs</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Integrações</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 4 -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 ml-0 md:ml-16 fade-in-up delay-300 border-l-2 md:border-l-0 border-emeraldLight">
+                        <div class="w-12 h-12 rounded-lg bg-emeraldLight/20 flex items-center justify-center shrink-0 border border-emeraldLight/50 md:absolute md:-left-[4.5rem]">
+                            <i data-lucide="brain-circuit" class="w-6 h-6 text-emeraldLight"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-emeraldLight mb-2 uppercase tracking-wide">Inteligência</h3>
+                            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-300">
+                                <span class="px-2 py-1 bg-emeraldLight/10 border border-emeraldLight/20 rounded">Analytics</span>
+                                <span class="px-2 py-1 bg-emeraldLight/10 border border-emeraldLight/20 rounded">Machine Learning</span>
+                                <span class="px-2 py-1 bg-emeraldLight/10 border border-emeraldLight/20 rounded">IA Generativa</span>
+                                <span class="px-2 py-1 bg-emeraldLight/10 border border-emeraldLight/20 rounded">Agentes de IA</span>
+                                <span class="px-2 py-1 bg-emeraldLight/10 border border-emeraldLight/20 rounded">Otimização</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 5 -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10 ml-0 md:ml-16 fade-in-up delay-400 border-l-2 md:border-l-0 border-techBlue">
+                        <div class="w-12 h-12 rounded-lg bg-techBlue/20 flex items-center justify-center shrink-0 border border-techBlue/50 md:absolute md:-left-[4.5rem]">
+                            <i data-lucide="settings-2" class="w-6 h-6 text-techBlue"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold text-techBlue mb-2 uppercase tracking-wide">Automação</h3>
+                            <div class="flex flex-wrap gap-2 text-xs font-medium text-gray-300">
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Workflows</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">RPA</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Agentes Autônomos</span>
+                                <span class="px-2 py-1 bg-techBlue/10 border border-techBlue/20 rounded">Orquestração</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. DIFERENCIAIS E COMO TRABALHAMOS -->
+        <section class="py-24 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                    
+                    <!-- Diferenciais -->
+                    <div>
+                        <h2 class="text-3xl font-heading font-bold text-white mb-8 fade-in-up">Diferenciais GMSF</h2>
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4 fade-in-up">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Visão E2E</strong> <span class="text-gray-400 text-sm">Compreensão holística de toda a cadeia de suprimentos e processos core.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4 fade-in-up delay-100">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Integração Tecnologia + Negócio</strong> <span class="text-gray-400 text-sm">Soluções tecnológicas desenhadas para gerar resultados de negócio tangíveis.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4 fade-in-up delay-200">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Arquitetura Orientada a Dados</strong> <span class="text-gray-400 text-sm">Decisões embasadas em governança e modelagem avançada de dados.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4 fade-in-up delay-300">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Automação Inteligente</strong> <span class="text-gray-400 text-sm">Substituição de tarefas repetitivas por orquestração autônoma eficiente.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4 fade-in-up delay-400">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Sustentabilidade</strong> <span class="text-gray-400 text-sm">Compromisso com a redução de impacto ambiental através da otimização.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4 fade-in-up delay-400">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-emeraldLight shrink-0"></i>
+                                <div><strong class="text-white block mb-1">Escalabilidade</strong> <span class="text-gray-400 text-sm">Arquiteturas preparadas para crescer e se adaptar às mudanças do mercado.</span></div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Como Trabalhamos -->
+                    <div>
+                        <h2 class="text-3xl font-heading font-bold text-white mb-8 fade-in-up">Como Trabalhamos</h2>
+                        
+                        <div class="relative">
+                            <div class="absolute left-[1.15rem] top-4 bottom-4 w-[2px] bg-gray-800"></div>
+                            
+                            <div class="space-y-8 relative">
+                                <div class="flex items-start gap-6 fade-in-up">
+                                    <div class="w-10 h-10 rounded-full bg-navy border-2 border-gray-600 flex items-center justify-center shrink-0 z-10">
+                                        <span class="text-xs font-bold text-gray-400">01</span>
+                                    </div>
+                                    <div class="pt-2">
+                                        <h4 class="text-lg font-bold text-white mb-1">Diagnosticar</h4>
+                                        <p class="text-sm text-gray-400">Mapeamento profundo do estado atual, identificação de gargalos e oportunidades.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-6 fade-in-up delay-100">
+                                    <div class="w-10 h-10 rounded-full bg-navy border-2 border-techBlue flex items-center justify-center shrink-0 z-10 shadow-[0_0_10px_rgba(37,99,235,0.2)]">
+                                        <span class="text-xs font-bold text-techBlue">02</span>
+                                    </div>
+                                    <div class="pt-2">
+                                        <h4 class="text-lg font-bold text-white mb-1">Arquitetar</h4>
+                                        <p class="text-sm text-gray-400">Desenho da solução ideal, selecionando modelos de IA, ferramentas e integrações ERP.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-6 fade-in-up delay-200">
+                                    <div class="w-10 h-10 rounded-full bg-navy border-2 border-gray-600 flex items-center justify-center shrink-0 z-10">
+                                        <span class="text-xs font-bold text-gray-400">03</span>
+                                    </div>
+                                    <div class="pt-2">
+                                        <h4 class="text-lg font-bold text-white mb-1">Desenvolver</h4>
+                                        <p class="text-sm text-gray-400">Engenharia de dados, treinamento de modelos e construção das automações.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-6 fade-in-up delay-300">
+                                    <div class="w-10 h-10 rounded-full bg-navy border-2 border-emeraldLight flex items-center justify-center shrink-0 z-10 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                        <span class="text-xs font-bold text-emeraldLight">04</span>
+                                    </div>
+                                    <div class="pt-2">
+                                        <h4 class="text-lg font-bold text-white mb-1">Implementar</h4>
+                                        <p class="text-sm text-gray-400">Integração aos sistemas produtivos com foco em gestão de mudança e adoção.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-6 fade-in-up delay-400">
+                                    <div class="w-10 h-10 rounded-full bg-navy border-2 border-gray-600 flex items-center justify-center shrink-0 z-10">
+                                        <span class="text-xs font-bold text-gray-400">05</span>
+                                    </div>
+                                    <div class="pt-2">
+                                        <h4 class="text-lg font-bold text-white mb-1">Evoluir</h4>
+                                        <p class="text-sm text-gray-400">Monitoramento contínuo, retraining de modelos e melhoria iterativa de processos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. IMPACTO -->
+        <section class="py-16 bg-gradient-to-r from-navyLight via-[#0f172a] to-navyLight border-y border-gray-800">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+                    <div class="p-4 fade-in-up">
+                        <div class="text-3xl text-techBlue mb-2"><i data-lucide="trending-up" class="w-8 h-8 mx-auto"></i></div>
+                        <div class="text-2xl font-bold text-white mb-1">+ Eficiência</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Operacional</div>
+                    </div>
+                    <div class="p-4 fade-in-up delay-100">
+                        <div class="text-3xl text-white mb-2"><i data-lucide="eye" class="w-8 h-8 mx-auto"></i></div>
+                        <div class="text-2xl font-bold text-white mb-1">+ Visibilidade</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Ponta a Ponta</div>
+                    </div>
+                    <div class="p-4 fade-in-up delay-200">
+                        <div class="text-3xl text-techBlue mb-2"><i data-lucide="radar" class="w-8 h-8 mx-auto"></i></div>
+                        <div class="text-2xl font-bold text-white mb-1">+ Previsibilidade</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">De Cenários</div>
+                    </div>
+                    <div class="p-4 fade-in-up delay-300">
+                        <div class="text-3xl text-white mb-2"><i data-lucide="cpu" class="w-8 h-8 mx-auto"></i></div>
+                        <div class="text-2xl font-bold text-white mb-1">+ Automação</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Inteligente</div>
+                    </div>
+                    <div class="p-4 fade-in-up delay-400 col-span-2 md:col-span-1">
+                        <div class="text-3xl text-emeraldLight mb-2"><i data-lucide="leaf" class="w-8 h-8 mx-auto"></i></div>
+                        <div class="text-2xl font-bold text-white mb-1">+ Sustentabilidade</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wider">Ambiental & Econômica</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CALL TO ACTION -->
+        <section class="py-24 relative overflow-hidden text-center">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgY3g9IjMiIGN5PSIzIiByPSIzIiBmaWxsPSIjMWUzYTg4IiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvZz48L3N2Zz4=')] opacity-20"></div>
+            
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 fade-in-up">
+                <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">Sua Supply Chain está preparada para operar com <span class="text-techBlue">Inteligência Artificial?</span></h2>
+                <p class="text-xl text-gray-400 mb-10">
+                    Descubra como conectar processos, dados, ERP, Inteligência Artificial e automação para construir uma operação mais inteligente, resiliente e sustentável.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#contato" class="w-full sm:w-auto px-8 py-4 bg-techBlue text-white font-semibold rounded-md hover:bg-techBlueDark transition-colors shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+                        Agendar Consultoria
+                    </a>
+                    <a href="#solucoes" class="w-full sm:w-auto px-8 py-4 bg-gray-800 text-white font-semibold rounded-md hover:bg-gray-700 transition-colors">
+                        Conheça Nossas Soluções
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. CONTATO -->
+        <section id="contato" class="py-24 bg-navyLight border-t border-gray-800 relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    
+                    <!-- Text Info -->
+                    <div class="fade-in-up">
+                        <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mb-6">Vamos Arquitetar o <br/><span class="text-techBlue">Futuro da Sua Operação?</span></h2>
+                        <p class="text-gray-400 text-lg mb-8">
+                            Conte-nos sobre seu desafio. A GMSF pode ajudar sua organização a conectar Processos, Dados, ERP, Inteligência Artificial, Machine Learning e Automação para transformar sua operação E2E.
+                        </p>
+                        
+                        <div class="glass-panel p-8 rounded-xl border border-gray-700 mb-8">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                <i data-lucide="message-square" class="w-5 h-5 text-emeraldLight"></i> Canal Rápido
+                            </h3>
+                            <p class="text-gray-400 text-sm mb-6">Prefere falar diretamente conosco agora? Inicie uma conversa no WhatsApp.</p>
+                            <button onclick="openDirectWhatsApp()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold rounded-md transition-colors shadow-lg">
+                                <i data-lucide="message-circle" class="w-5 h-5 fill-current"></i> Falar Agora pelo WhatsApp
+                            </button>
+                        </div>
+                        
+                        <div class="text-sm text-gray-500 font-medium">
+                            <p class="mb-2"><strong class="text-gray-300">WhatsApp:</strong> +55 11 99629-4579</p>
+                            <p><strong class="text-gray-300">Localização:</strong> São Paulo — Brasil</p>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="glass-panel p-8 rounded-xl border border-gray-700 fade-in-up delay-200 shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-techBlue/10 rounded-bl-full -z-10"></div>
+                        
+                        <form id="contact-form" class="space-y-5" onsubmit="sendToWhatsApp(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-400 mb-1">Nome *</label>
+                                    <input type="text" id="name" required class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600" placeholder="Seu nome">
+                                </div>
+                                <div>
+                                    <label for="company" class="block text-sm font-medium text-gray-400 mb-1">Empresa</label>
+                                    <input type="text" id="company" class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600" placeholder="Nome da empresa">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="role" class="block text-sm font-medium text-gray-400 mb-1">Cargo</label>
+                                    <input type="text" id="role" class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600" placeholder="Seu cargo">
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Telefone</label>
+                                    <input type="tel" id="phone" class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-400 mb-1">E-mail *</label>
+                                <input type="email" id="email" required class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600" placeholder="seu@email.com">
+                            </div>
+
+                            <div>
+                                <label for="interest" class="block text-sm font-medium text-gray-400 mb-1">Área de Interesse</label>
+                                <div class="relative">
+                                    <select id="interest" class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue appearance-none transition-colors">
+                                        <option value="" disabled selected>Selecione uma opção</option>
+                                        <option value="Inteligência Artificial">Inteligência Artificial</option>
+                                        <option value="Machine Learning">Machine Learning</option>
+                                        <option value="Automação de Processos">Automação de Processos</option>
+                                        <option value="Dados & Analytics">Dados & Analytics</option>
+                                        <option value="ERP">ERP</option>
+                                        <option value="E2E Supply Chain">E2E Supply Chain</option>
+                                        <option value="Logística e Otimização">Logística e Otimização</option>
+                                        <option value="Economia Circular">Economia Circular</option>
+                                        <option value="Agentes de IA">Agentes de IA</option>
+                                        <option value="Outro">Outro</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-400 mb-1">Mensagem *</label>
+                                <textarea id="message" rows="4" required class="w-full bg-navy border border-gray-700 rounded-md px-4 py-2.5 text-white focus:outline-none focus:border-techBlue focus:ring-1 focus:ring-techBlue transition-colors placeholder-gray-600 resize-none" placeholder="Descreva brevemente seu desafio..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-techBlue hover:bg-techBlueDark text-white font-bold rounded-md transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                                <i data-lucide="send" class="w-5 h-5"></i> Enviar pelo WhatsApp
+                            </button>
+                            <p class="text-xs text-gray-500 text-center mt-3">Você será redirecionado para o WhatsApp com os dados preenchidos.</p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+                
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-5">
+                    <a href="#" class="font-heading font-bold text-2xl text-white tracking-tight mb-2 block">GMSF</a>
+                    <span class="text-sm uppercase tracking-widest text-emeraldLight block mb-6">Arquitetos de IA & Automações</span>
+                    <p class="text-sm text-gray-400 mb-6 max-w-sm">
+                        GMSF — Arquitetando a inteligência que conecta toda a cadeia de valor.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-techBlue transition-colors" aria-label="LinkedIn">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-techBlue transition-colors" aria-label="YouTube">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-techBlue transition-colors" aria-label="Instagram">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Expertise -->
+                <div class="col-span-1 md:col-span-4">
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Expertise</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li>Inteligência Artificial & Machine Learning</li>
+                        <li>Dados & Analytics</li>
+                        <li>Integração ERP</li>
+                        <li>Automação de Processos</li>
+                        <li>E2E Supply Chain</li>
+                        <li>Economia Circular</li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-span-1 md:col-span-3">
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-sm">Contato</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="message-circle" class="w-5 h-5 text-emeraldLight shrink-0"></i>
+                            <span>WhatsApp: <br/><strong>+55 11 99629-4579</strong></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-techBlue shrink-0"></i>
+                            <span>São Paulo — Brasil</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-gray-500">
+                    © 2026 GMSF. Todos os direitos reservados.
+                </p>
+                <button onclick="scrollToTop()" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors" aria-label="Voltar ao topo">
+                    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <button onclick="openDirectWhatsApp()" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#1EBE5D] text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(37,211,102,0.4)] transition-transform hover:scale-110 group" aria-label="Fale com a GMSF">
+        <i data-lucide="message-circle" class="w-7 h-7 fill-current"></i>
+        <!-- Tooltip -->
+        <span class="absolute right-full mr-4 bg-gray-800 text-white text-xs font-semibold px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
+            Fale com a GMSF
+            <!-- Arrow -->
+            <span class="absolute top-1/2 left-full -translate-y-1/2 border-4 border-transparent border-l-gray-800"></span>
+        </span>
+    </button>
+
+    <!-- JavaScript Interactions -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-lg', 'border-b', 'border-gray-800');
+                navbar.classList.remove('border-transparent');
+            } else {
+                navbar.classList.remove('shadow-lg', 'border-b', 'border-gray-800');
+                navbar.classList.add('border-transparent');
+            }
+        });
+
+        // Intersection Observer for scroll animations (fade-in-up)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Run once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Scroll to Top Function
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // WhatsApp Direct Function
+        function openDirectWhatsApp() {
+            const defaultMsg = "Tive conhecimento dos seus produtos na landing page da GMSF, contate-me.";
+            const encodedMessage = encodeURIComponent(defaultMsg);
+            const whatsappUrl = `https://wa.me/5511996294579?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Form Submit to WhatsApp Function
+        function sendToWhatsApp(event) {
+            event.preventDefault(); // Prevent standard form submission
+
+            const name = document.getElementById('name').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            const interestSelect = document.getElementById('interest');
+            const interest = interestSelect.value;
+            
+            const message = document.getElementById('message').value.trim();
+
+            // Basic validation for required fields
+            if (!name || !email || !message) {
+                alert('Por favor, preencha os campos obrigatórios (Nome, E-mail e Mensagem).');
+                return;
+            }
+
+            const defaultMsg = "Tive conhecimento dos seus produtos na landing page da GMSF, contate-me.";
+            
+            // Construct the professional message format
+            let fullMessage = `${defaultMsg}\n\n`;
+            fullMessage += `Nome: ${name}\n`;
+            if (company) fullMessage += `Empresa: ${company}\n`;
+            if (role) fullMessage += `Cargo: ${role}\n`;
+            fullMessage += `E-mail: ${email}\n`;
+            if (phone) fullMessage += `Telefone: ${phone}\n`;
+            if (interest) fullMessage += `Área de interesse: ${interest}\n`;
+            fullMessage += `Mensagem: ${message}`;
+
+            const encodedMessage = encodeURIComponent(fullMessage);
+            const whatsappUrl = `https://wa.me/5511996294579?text=${encodedMessage}`;
+
+            // Open WhatsApp in new tab
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
